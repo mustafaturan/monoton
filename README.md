@@ -1,5 +1,7 @@
 # Monoton
 
+[![Build Status](https://travis-ci.org/mustafaturan/monoton.svg?branch=master)](https://travis-ci.org/mustafaturan/monoton)
+
 Highly scalable, single/multi node, predictable and incremental unique id
 generator.
 
