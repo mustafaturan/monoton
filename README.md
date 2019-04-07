@@ -1,6 +1,7 @@
 # Monoton
 
 [![Build Status](https://travis-ci.org/mustafaturan/monoton.svg?branch=master)](https://travis-ci.org/mustafaturan/monoton)
+[![Coverage Status](https://coveralls.io/repos/github/mustafaturan/monoton/badge.svg?branch=master)](https://coveralls.io/github/mustafaturan/monoton?branch=master)
 
 Highly scalable, single/multi node, predictable and incremental unique id
 generator.
