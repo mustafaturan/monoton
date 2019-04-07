@@ -45,11 +45,9 @@ func Configure(s sequencer.Sequencer, node uint) error {
 	if err := configureByteSizes(); err != nil {
 		return err
 	}
-	if err := configureNode(node); err != nil {
-		return err
-	}
+	err := configureNode(node)
 
-	return nil
+	return err
 }
 
 // Next generates next incremental unique identifier as Base62
