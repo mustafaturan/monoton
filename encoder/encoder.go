@@ -2,6 +2,9 @@
 // Use of this source code is governed by a Apache License 2.0 license that can
 // be found in the LICENSE file.
 
+// Package encoder provides encoding functionality for Base10 to Base62
+// convertion with/without paddings
+//
 package encoder
 
 import (

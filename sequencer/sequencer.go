@@ -2,19 +2,19 @@
 // Use of this source code is governed by a Apache License 2.0 license that can
 // be found in the LICENSE file.
 
-// Package sequencer provides sequences based on `monotonic` time
+// Package sequencer provides sequences based on monotonic time
 //
 // Time
 //
-// The `sequncer` package provides sequences based on the `monotonic` time which
+// The sequncer package provides sequences based on the monotonic time which
 // represents the absolute elapsed wall-clock time since some arbitrary, fixed
 // point in the past. It isn't affected by changes in the system time-of-day
 // clock.
 //
 // Time - Consequences
 //
-// Since the `monotonic` time needs extra calculation steps when it is compared
-// to regular `system` time, it also consumes an extra time while generating
+// Since the monotonic time needs extra calculation steps when it is compared
+// to regular system time, it also consumes an extra time while generating
 // sequences.
 //
 // NOTE: According to the documentation of Go language
@@ -31,8 +31,8 @@
 //
 // Byte Sizes - Defaults
 //
-// The package comes with pre-configured byte sizes for the `Nanosecond`,
-// `Millisecond` and `Second` sequencers. And it does not allow you to adjust
+// The package comes with pre-configured byte sizes for the Nanosecond,
+// Millisecond and Second sequencers. And it does not allow you to adjust
 // current sizes unless you create another sequencer.
 // The defaults are adjusted the time and sequence byte sizes depending on
 // general needs and to increase compatibility between projects.

@@ -17,6 +17,8 @@ Since the `monotonic` time needs extra calculation steps when it is compared to
 regular `system` time, it also consumes an extra time while generating
 sequences.
 
-Moreover, according to the documentation of Go language [time package](https://golang.org/pkg/time/),
-on some systems, the monotonic clock will stop if the computer goes to sleep. On
-such a system, t.Sub(u) may not accurately reflect the actual time that passed between t and u which will result with incorrect sequences.
+Moreover, according to the documentation of Go language
+[time package](https://golang.org/pkg/time/), on some systems, the monotonic
+clock will stop if the computer goes to sleep. On such a system, `t.Sub(u)` may
+not accurately reflect the actual time that passed between `t` and `u` which
+will result with incorrect sequences.
