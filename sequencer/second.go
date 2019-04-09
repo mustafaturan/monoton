@@ -68,6 +68,6 @@ func (s *Second) incrementSequences() {
 }
 
 func (s *Second) monotonicTimeDiff() (uint, uint) {
-	timeDiff := -1 * time.Until(s.monotonicTime).Nanoseconds()
+	timeDiff := time.Since(s.monotonicTime).Nanoseconds()
 	return uint(timeDiff), uint(timeDiff / secondInNanoseconds)
 }
