@@ -13,37 +13,52 @@ func TestConfigure(t *testing.T) {
 	tests := []struct {
 		s            sequencer.Sequencer
 		node         uint
+		initialTime  uint
 		expectedErr  error
 		expectedNode string
+		expectedTime uint
 	}{
 		{
 			&validSequencer{},
 			3843,
+			uint(1),
 			nil,
 			"zz",
+			uint(1),
 		},
 		{
 			&validSequencer{},
 			3844,
+			uint(2),
 			errors.New("Node can't be greater than 3843 (given 3844)"),
 			"",
+			uint(2),
 		},
 		{
 			&invalidSequencer{},
 			1,
+			uint(0),
 			errors.New("Total byte size can't be >= to sum of s:8, t:8"),
 			"",
+			uint(0),
 		},
 	}
 
 	configureMsg := "Configure(%v, %d) expected: %v, resulted with: %v"
-	nodeMsg := "Configure(%v, %d) expected node: %s, resulted with: %s"
+	nodeMsg := "Configure(%v, %d, _) expected node: %s, resulted with: %s"
+	timeMsg := "Configure(%v, _, %d) expected time: %d, resulted with: %d"
 	for _, test := range tests {
-		result := Configure(test.s, test.node)
+		result := Configure(test.s, test.node, test.initialTime)
 
 		t.Run("assigns node val correctly", func(t *testing.T) {
 			if c.node != test.expectedNode {
 				t.Errorf(nodeMsg, test.s, test.node, test.expectedNode, c.node)
+			}
+		})
+
+		t.Run("assigns initialTime val correctly", func(t *testing.T) {
+			if c.node != test.expectedNode {
+				t.Errorf(timeMsg, test.s, test.initialTime, test.expectedTime, c.initalTime)
 			}
 		})
 
@@ -56,10 +71,10 @@ func TestConfigure(t *testing.T) {
 }
 
 func TestNext(t *testing.T) {
-	Configure(&validSequencer{}, 3843)
+	Configure(&validSequencer{}, 3843, 0)
 	m1, m2 := Next(), Next()
 
-	t.Run("generates bigger sequences on each call", func(t *testing.T) {
+	t.Run("generates greater sequences on each call", func(t *testing.T) {
 		t.Parallel()
 		if strings.Compare(m1, m2) >= 0 {
 			t.Errorf("Next(): %s >= Next(): %s", m1, m2)

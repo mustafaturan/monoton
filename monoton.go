@@ -12,6 +12,11 @@
 // point in the past. It isn't affected by changes in the system time-of-day
 // clock.
 //
+// Initial Time
+//
+// Initial time value opens space for time value by deducting the given value
+// from time sequence.
+//
 // Readable
 //
 // The monoton package converts all sequences into Base62 format. And Base62
@@ -70,19 +75,20 @@ type config struct {
 	node            string
 	timeSeqByteSize int64
 	seqByteSize     int64
+	initalTime      uint
 }
 
 var c config
 
 func init() {
-	Configure(sequencer.NewMillisecond(), 0)
+	Configure(sequencer.NewMillisecond(), 0, 0)
 }
 
 // Configure configures the monoton with the given generator and node. If you
 // need to reset the node, then you have to reconfigure. If you do not configure
 // the node then the node will be set to zero value.
-func Configure(s sequencer.Sequencer, node uint) error {
-	c = config{sequencer: s}
+func Configure(s sequencer.Sequencer, node, initialTime uint) error {
+	c = config{sequencer: s, initalTime: initialTime}
 
 	if err := configureByteSizes(); err != nil {
 		return err
@@ -104,7 +110,7 @@ func Configure(s sequencer.Sequencer, node uint) error {
 func Next() string {
 	t, seq := next()
 
-	return encoder.ToBase62WithPaddingZeros(t, c.timeSeqByteSize) +
+	return encoder.ToBase62WithPaddingZeros(t-c.initalTime, c.timeSeqByteSize) +
 		encoder.ToBase62WithPaddingZeros(seq, c.seqByteSize) +
 		c.node
 }
