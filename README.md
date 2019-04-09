@@ -28,8 +28,15 @@ import (
 func init() {
 	// Fetch your node id from a config server or generate from MAC/IP address
 	node := uint(1)
+
+	// A unix time value which will deduct from the time Sequence
+	// The initialTime value type corresponds to the sequencer type's time
+	// representation. If you are using Millisecond sequencer then it must be
+	// considered as Millisecond
+	initialTime := uint(0)
+
 	// Configure monoton with a sequencer and the node
-	monoton.Configure(sequencer.NewMillisecond(), node)
+	monoton.Configure(sequencer.NewMillisecond(), node, initialTime)
 }
 
 func main() {
@@ -48,6 +55,11 @@ represents the absolute elapsed wall-clock time since some arbitrary, fixed
 point in the past. It isn't affected by changes in the system time-of-day clock.
 
 Please refer to [ADR 01 - Time](docs/adrs/time.md) for details and consequences.
+
+### Initial Time
+
+Initial time value opens space for time value by deducting the given value from
+time sequence.
 
 ### Readable
 
