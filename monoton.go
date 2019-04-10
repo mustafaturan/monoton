@@ -14,8 +14,8 @@
 //
 // Initial Time
 //
-// Initial time value opens space for time value by deducting the given value
-// from time sequence.
+// Initial time value opens space for the time value by subtracting the given
+// value from the time sequence.
 //
 // Readable
 //
@@ -26,7 +26,7 @@
 // The total byte size is fixed to 16 bytes for all sequencers. And at least one
 // byte is reserved to nodes.
 //
-// Single/Multi Node Support
+// Multi Node Support
 //
 // The monoton package can be used on single/multiple nodes without the need for
 // machine coordination. It uses configured node identifier to generate ids by

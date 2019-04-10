@@ -58,8 +58,8 @@ Please refer to [ADR 01 - Time](docs/adrs/time.md) for details and consequences.
 
 ### Initial Time
 
-Initial time value opens space for time value by deducting the given value from
-time sequence.
+Initial time value opens space for time value by subtracting the given value
+from the time sequence.
 
 ### Readable
 
@@ -73,7 +73,7 @@ byte is reserved to nodes.
 Please refer to [ADR 02 - Encoding](docs/adrs/encoding.md) for details and
 consequences.
 
-### Single/Multi Node Support
+### Multi Node Support
 
 The `monoton` package can be used on single/multiple nodes without the need for
 machine coordination. It uses configured node identifier to generate ids by
