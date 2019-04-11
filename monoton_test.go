@@ -11,12 +11,12 @@ import (
 
 func TestConfigure(t *testing.T) {
 	tests := []struct {
-		s            sequencer.Sequencer
-		node         uint
-		initialTime  uint
-		expectedErr  error
-		expectedNode string
-		expectedTime uint
+		s           sequencer.Sequencer
+		node        uint
+		initialTime uint
+		wantErr     error
+		wantNode    string
+		wantTime    uint
 	}{
 		{
 			&validSequencer{},
@@ -44,27 +44,27 @@ func TestConfigure(t *testing.T) {
 		},
 	}
 
-	configureMsg := "Configure(%v, %d) expected: %v, resulted with: %v"
-	nodeMsg := "Configure(%v, %d, _) expected node: %s, resulted with: %s"
-	timeMsg := "Configure(%v, _, %d) expected time: %d, resulted with: %d"
+	configureMsg := "Configure(%v, %d) want: %v, got: %v"
+	nodeMsg := "Configure(%v, %d, _) want node: %s, got node: %s"
+	timeMsg := "Configure(%v, _, %d) want time: %d, got time: %d"
 	for _, test := range tests {
-		result := Configure(test.s, test.node, test.initialTime)
+		got := Configure(test.s, test.node, test.initialTime)
 
 		t.Run("assigns node val correctly", func(t *testing.T) {
-			if c.node != test.expectedNode {
-				t.Errorf(nodeMsg, test.s, test.node, test.expectedNode, c.node)
+			if c.node != test.wantNode {
+				t.Errorf(nodeMsg, test.s, test.node, test.wantNode, c.node)
 			}
 		})
 
 		t.Run("assigns initialTime val correctly", func(t *testing.T) {
-			if c.node != test.expectedNode {
-				t.Errorf(timeMsg, test.s, test.initialTime, test.expectedTime, c.initalTime)
+			if c.node != test.wantNode {
+				t.Errorf(timeMsg, test.s, test.initialTime, test.wantTime, c.initalTime)
 			}
 		})
 
 		t.Run("errors with correct message", func(t *testing.T) {
-			if result != test.expectedErr && result.Error() != test.expectedErr.Error() {
-				t.Errorf(configureMsg, test.s, test.node, test.expectedErr, result)
+			if got != test.wantErr && got.Error() != test.wantErr.Error() {
+				t.Errorf(configureMsg, test.s, test.node, test.wantErr, got)
 			}
 		})
 	}

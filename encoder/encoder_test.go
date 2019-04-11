@@ -4,8 +4,8 @@ import "testing"
 
 func TestToBase62(t *testing.T) {
 	tests := []struct {
-		val         uint64
-		expectedVal string
+		val  uint64
+		want string
 	}{
 		{1, "1"},
 		{63, "11"},
@@ -14,18 +14,18 @@ func TestToBase62(t *testing.T) {
 
 	msg := "ToBase62(%d) = %v, but returned %v"
 	for _, test := range tests {
-		result := ToBase62(test.val)
-		if result != test.expectedVal {
-			t.Errorf(msg, test.val, test.expectedVal, result)
+		got := ToBase62(test.val)
+		if got != test.want {
+			t.Errorf(msg, test.val, test.want, got)
 		}
 	}
 }
 
 func TestToBase62WithPaddingZeros(t *testing.T) {
 	tests := []struct {
-		val         uint
-		padding     int64
-		expectedVal string
+		val     uint
+		padding int64
+		want    string
 	}{
 		{1, 11, "00000000001"},
 		{63, 11, "00000000011"},
@@ -34,9 +34,9 @@ func TestToBase62WithPaddingZeros(t *testing.T) {
 
 	msg := "ToBase62WithPaddingZeros(%d, %d) = %v, but returned %v"
 	for _, test := range tests {
-		result := ToBase62WithPaddingZeros(test.val, test.padding)
-		if result != test.expectedVal {
-			t.Errorf(msg, test.val, test.padding, test.expectedVal, result)
+		got := ToBase62WithPaddingZeros(test.val, test.padding)
+		if got != test.want {
+			t.Errorf(msg, test.val, test.padding, test.want, got)
 		}
 	}
 }

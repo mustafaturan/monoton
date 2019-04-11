@@ -9,8 +9,8 @@ import (
 
 func TestMaxSequenceTime(t *testing.T) {
 	tests := []struct {
-		expectedMaxSequenceTime uint
-		seq                     Sequencer
+		wantMaxSequenceTime uint
+		seq                 Sequencer
 	}{
 		{uint(math.Pow(62, 6) - 1), NewSecond()},
 		{uint(math.Pow(62, 8) - 1), NewMillisecond()},
@@ -20,11 +20,11 @@ func TestMaxSequenceTime(t *testing.T) {
 	for _, test := range tests {
 		gotMaxSequenceTime := test.seq.MaxSequenceTime()
 
-		if test.expectedMaxSequenceTime != gotMaxSequenceTime {
+		if test.wantMaxSequenceTime != gotMaxSequenceTime {
 			t.Errorf(
-				"%s.MaxSequenceTime(), expected: %d, got: %d",
+				"%s.MaxSequenceTime(), want: %d, got: %d",
 				reflect.TypeOf(test.seq).String(),
-				test.expectedMaxSequenceTime,
+				test.wantMaxSequenceTime,
 				gotMaxSequenceTime,
 			)
 		}
@@ -33,8 +33,8 @@ func TestMaxSequenceTime(t *testing.T) {
 
 func TestMaxSequence(t *testing.T) {
 	tests := []struct {
-		expectedMaxSequence uint
-		seq                 Sequencer
+		wantMaxSequence uint
+		seq             Sequencer
 	}{
 		{uint(math.Pow(62, 6) - 1), NewSecond()},
 		{uint(math.Pow(62, 4) - 1), NewMillisecond()},
@@ -44,11 +44,11 @@ func TestMaxSequence(t *testing.T) {
 	for _, test := range tests {
 		gotMaxSequence := test.seq.MaxSequence()
 
-		if test.expectedMaxSequence != gotMaxSequence {
+		if test.wantMaxSequence != gotMaxSequence {
 			t.Errorf(
-				"%s.MaxSequence(), expected: %d, got: %d",
+				"%s.MaxSequence(), want: %d, got: %d",
 				reflect.TypeOf(test.seq).String(),
-				test.expectedMaxSequence,
+				test.wantMaxSequence,
 				gotMaxSequence,
 			)
 		}

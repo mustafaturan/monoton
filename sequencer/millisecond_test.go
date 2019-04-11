@@ -6,14 +6,14 @@ import (
 )
 
 func TestNewMillisecond(t *testing.T) {
-	expectedType := reflect.TypeOf(&Millisecond{})
-	gotType := reflect.TypeOf(NewMillisecond())
+	want := reflect.TypeOf(&Millisecond{})
+	got := reflect.TypeOf(NewMillisecond())
 
-	if expectedType != gotType {
+	if want != got {
 		t.Errorf(
-			"NewMillisecond() call expected: %T, resulted with %T",
-			expectedType,
-			gotType,
+			"NewMillisecond() call want type: %T, got type: %T",
+			want,
+			got,
 		)
 	}
 }

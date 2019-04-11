@@ -6,14 +6,14 @@ import (
 )
 
 func TestNewNanosecond(t *testing.T) {
-	expectedType := reflect.TypeOf(&Nanosecond{})
-	gotType := reflect.TypeOf(NewNanosecond())
+	want := reflect.TypeOf(&Nanosecond{})
+	got := reflect.TypeOf(NewNanosecond())
 
-	if expectedType != gotType {
+	if want != got {
 		t.Errorf(
-			"NewNanosecond() call expected: %T, resulted with %T",
-			expectedType,
-			gotType,
+			"NewNanosecond() call want type: %T, got type: %T",
+			want,
+			got,
 		)
 	}
 }
