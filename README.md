@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/mustafaturan/monoton.svg?branch=master)](https://travis-ci.org/mustafaturan/monoton)
 [![Coverage Status](https://coveralls.io/repos/github/mustafaturan/monoton/badge.svg?branch=master)](https://coveralls.io/github/mustafaturan/monoton?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mustafaturan/monoton)](https://goreportcard.com/report/github.com/mustafaturan/monoton)
+[![GoDoc](https://godoc.org/github.com/mustafaturan/monoton?status.svg)](https://godoc.org/github.com/mustafaturan/monoton)
 
 Highly scalable, single/multi node, predictable and incremental unique id
 generator.
