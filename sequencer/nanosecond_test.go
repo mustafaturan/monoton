@@ -10,10 +10,6 @@ func TestNewNanosecond(t *testing.T) {
 	got := reflect.TypeOf(NewNanosecond())
 
 	if want != got {
-		t.Errorf(
-			"NewNanosecond() call want type: %T, got type: %T",
-			want,
-			got,
-		)
+		t.Errorf("NewNanosecond() call want type: %T, got type: %T", want, got)
 	}
 }

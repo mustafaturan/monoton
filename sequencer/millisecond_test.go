@@ -10,10 +10,6 @@ func TestNewMillisecond(t *testing.T) {
 	got := reflect.TypeOf(NewMillisecond())
 
 	if want != got {
-		t.Errorf(
-			"NewMillisecond() call want type: %T, got type: %T",
-			want,
-			got,
-		)
+		t.Errorf("NewMillisecond() call want type: %T, got type: %T", want, got)
 	}
 }
