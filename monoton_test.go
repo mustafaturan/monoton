@@ -38,7 +38,7 @@ func TestConfigure(t *testing.T) {
 			&invalidSequencer{},
 			1,
 			uint(0),
-			errors.New("Total byte size can't be >= to sum of s:8, t:8"),
+			errors.New("Sum of s:8, t:8 bytes can't be >= total byte size"),
 			"",
 			uint(0),
 		},
