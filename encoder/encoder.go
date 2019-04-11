@@ -3,7 +3,7 @@
 // be found in the LICENSE file.
 
 // Package encoder provides encoding functionality for Base10 to Base62
-// convertion with/without paddings
+// conversion with/without paddings
 //
 package encoder
 
