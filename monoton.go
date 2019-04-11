@@ -75,7 +75,7 @@ type config struct {
 	node            string
 	timeSeqByteSize int64
 	seqByteSize     int64
-	initalTime      uint
+	initialTime     uint
 }
 
 var c config
@@ -88,7 +88,7 @@ func init() {
 // need to reset the node, then you have to reconfigure. If you do not configure
 // the node then the node will be set to zero value.
 func Configure(s sequencer.Sequencer, node, initialTime uint) error {
-	c = config{sequencer: s, initalTime: initialTime}
+	c = config{sequencer: s, initialTime: initialTime}
 
 	if err := configureByteSizes(); err != nil {
 		return err
@@ -110,7 +110,7 @@ func Configure(s sequencer.Sequencer, node, initialTime uint) error {
 func Next() string {
 	t, seq := next()
 
-	return encoder.ToBase62WithPaddingZeros(t-c.initalTime, c.timeSeqByteSize) +
+	return encoder.ToBase62WithPaddingZeros(t-c.initialTime, c.timeSeqByteSize) +
 		encoder.ToBase62WithPaddingZeros(seq, c.seqByteSize) +
 		c.node
 }

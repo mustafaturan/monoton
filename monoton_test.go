@@ -57,8 +57,8 @@ func TestConfigure(t *testing.T) {
 		})
 
 		t.Run("assigns initialTime val correctly", func(t *testing.T) {
-			if c.node != test.wantNode {
-				t.Errorf(timeMsg, test.s, test.initialTime, test.wantTime, c.initalTime)
+			if c.initialTime != test.wantTime {
+				t.Errorf(timeMsg, test.s, test.initialTime, test.wantTime, c.initialTime)
 			}
 		})
 
