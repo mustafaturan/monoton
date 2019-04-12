@@ -44,7 +44,7 @@ func TestConfigure(t *testing.T) {
 		},
 	}
 
-	configureMsg := "Configure(%v, %d) want: %v, got: %v"
+	configureMsg := "Configure(%v, %d, %d) want: %v, got: %v"
 	nodeMsg := "Configure(%v, %d, _) want node: %s, got node: %s"
 	timeMsg := "Configure(%v, _, %d) want time: %d, got time: %d"
 	for _, test := range tests {
@@ -64,7 +64,7 @@ func TestConfigure(t *testing.T) {
 
 		t.Run("errors with correct message", func(t *testing.T) {
 			if got != test.wantErr && got.Error() != test.wantErr.Error() {
-				t.Errorf(configureMsg, test.s, test.node, test.wantErr, got)
+				t.Errorf(configureMsg, test.s, test.node, test.initialTime, test.wantErr, got)
 			}
 		})
 	}
