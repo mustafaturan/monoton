@@ -65,8 +65,8 @@ import (
 
 const (
 	totalByteSize       = 16
-	maxNodeErrorMsg     = "Node can't be greater than %d (given %d)"
-	maxByteSizeErrorMsg = "Sum of s:%d, t:%d bytes can't be >= total byte size"
+	maxNodeErrorMsg     = "node can't be greater than %d (given %d)"
+	maxByteSizeErrorMsg = "sum of s:%d, t:%d bytes can't be >= total byte size"
 )
 
 type config struct {
