@@ -6,13 +6,14 @@ package sequencer
 
 import (
 	"time"
+
+	"github.com/mustafaturan/monoton/mtimer"
 )
 
 // Millisecond is monotonic millisecond time based sequencer for monoton
 type Millisecond struct {
-	sequence      uint
-	sequenceTime  uint
-	monotonicTime time.Time
+	sequence     uint
+	sequenceTime uint
 }
 
 var m *Millisecond
@@ -22,17 +23,13 @@ const (
 	millisecondMaxSequenceTime = 62*62*62*62*62*62*62*62 - 1
 	// Maxiumum sequence value for Millisecond sequencer
 	millisecondMaxSequence = 62*62*62*62 - 1
-	// One millisecond value in nanoseconds
-	millisecondInNanoseconds = int64(time.Millisecond)
+	// One millisecond in nanoseconds
+	millisecondInNanoseconds = uint(time.Millisecond)
 )
 
 func init() {
-	monotonicTime := time.Now()
-	m = &Millisecond{
-		sequence:      0,
-		sequenceTime:  uint(monotonicTime.UnixNano() / millisecondInNanoseconds),
-		monotonicTime: monotonicTime,
-	}
+	m = &Millisecond{sequence: 0}
+	m.sequenceTime = m.now()
 }
 
 // NewMillisecond returns the initialized millisecond sequencer
@@ -57,17 +54,15 @@ func (m *Millisecond) Next() (uint, uint) {
 }
 
 func (m *Millisecond) incrementSequences() {
-	timeDiff, timeDiffInMilliseconds := m.monotonicTimeDiff()
-	if timeDiffInMilliseconds > 0 {
-		m.monotonicTime = m.monotonicTime.Add(time.Duration(timeDiff))
-		m.sequenceTime += timeDiffInMilliseconds
+	currentTime := m.now()
+	if currentTime > m.sequenceTime {
+		m.sequenceTime = currentTime
 		m.sequence = 0
 	} else {
 		m.sequence++
 	}
 }
 
-func (m *Millisecond) monotonicTimeDiff() (uint, uint) {
-	timeDiff := time.Since(m.monotonicTime).Nanoseconds()
-	return uint(timeDiff), uint(timeDiff / millisecondInNanoseconds)
+func (m *Millisecond) now() uint {
+	return mtimer.Now() / millisecondInNanoseconds
 }

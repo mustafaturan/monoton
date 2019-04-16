@@ -4,15 +4,12 @@
 
 package sequencer
 
-import (
-	"time"
-)
+import "github.com/mustafaturan/monoton/mtimer"
 
 // Nanosecond is monotonic nanosecond time based sequencer for monoton
 type Nanosecond struct {
-	sequence      uint
-	sequenceTime  uint
-	monotonicTime time.Time
+	sequence     uint
+	sequenceTime uint
 }
 
 var n *Nanosecond
@@ -25,12 +22,8 @@ const (
 )
 
 func init() {
-	monotonicTime := time.Now()
-	n = &Nanosecond{
-		sequence:      0,
-		sequenceTime:  uint(monotonicTime.UnixNano()),
-		monotonicTime: monotonicTime,
-	}
+	n = &Nanosecond{sequence: 0}
+	n.sequenceTime = n.now()
 }
 
 // NewNanosecond returns the initialized nanosecond sequencer
@@ -55,17 +48,15 @@ func (n *Nanosecond) Next() (uint, uint) {
 }
 
 func (n *Nanosecond) incrementSequences() {
-	timeDiff := n.monotonicTimeDiff()
-	if timeDiff > 0 {
-		n.monotonicTime = n.monotonicTime.Add(time.Duration(timeDiff))
-		n.sequenceTime += timeDiff
+	currentTime := n.now()
+	if currentTime > n.sequenceTime {
+		n.sequenceTime = currentTime
 		n.sequence = 0
 	} else {
 		n.sequence++
 	}
 }
 
-func (n *Nanosecond) monotonicTimeDiff() uint {
-	timeDiff := time.Since(n.monotonicTime).Nanoseconds()
-	return uint(timeDiff)
+func (n *Nanosecond) now() uint {
+	return mtimer.Now()
 }
