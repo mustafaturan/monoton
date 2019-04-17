@@ -13,7 +13,7 @@ type Sequence struct {
 	now     func() uint
 }
 
-// Max returns the maximum possible sequence value for a given time
+// Max returns the maximum possible sequence value
 func (s *Sequence) Max() uint {
 	return s.max
 }
