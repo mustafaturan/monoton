@@ -4,59 +4,15 @@
 
 package sequencer
 
-import "github.com/mustafaturan/monoton/mtimer"
-
-// Nanosecond is monotonic nanosecond time based sequencer for monoton
-type Nanosecond struct {
-	sequence     uint
-	sequenceTime uint
-}
-
-var n *Nanosecond
-
-const (
-	// Maxiumum sequence time value for Nanosecond sequencer
-	nanosecondMaxSequenceTime = 1<<64 - 1
-	// Maxiumum sequence value for Nanosecond sequencer
-	nanosecondMaxSequence = 62*62 - 1
+import (
+	"github.com/mustafaturan/monoton/mtimer"
 )
 
-func init() {
-	n = &Nanosecond{sequence: 0}
-	n.sequenceTime = n.now()
-}
-
-// NewNanosecond returns the initialized nanosecond sequencer
-func NewNanosecond() *Nanosecond {
-	return n
-}
-
-// MaxSequenceTime returns the maximum possible time sequence value
-func (n *Nanosecond) MaxSequenceTime() uint {
-	return nanosecondMaxSequenceTime
-}
-
-// MaxSequence returns the maximum possible sequence value for a given time
-func (n *Nanosecond) MaxSequence() uint {
-	return nanosecondMaxSequence
-}
-
-// Next increments the time and related counter sequences
-func (n *Nanosecond) Next() (uint, uint) {
-	n.incrementSequences()
-	return n.sequenceTime, n.sequence
-}
-
-func (n *Nanosecond) incrementSequences() {
-	currentTime := n.now()
-	if currentTime > n.sequenceTime {
-		n.sequenceTime = currentTime
-		n.sequence = 0
-	} else {
-		n.sequence++
+// NewNanosecond returns the preconfigured nanosecond sequencer
+func NewNanosecond() *Sequence {
+	return &Sequence{
+		now:     func() uint { return mtimer.Now() },
+		max:     62*62 - 1,
+		maxTime: uint(1<<64 - 1),
 	}
-}
-
-func (n *Nanosecond) now() uint {
-	return mtimer.Now()
 }

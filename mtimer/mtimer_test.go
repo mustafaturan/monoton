@@ -10,7 +10,7 @@ func TestNow(t *testing.T) {
 		t1 := Now()
 		time.Sleep(time.Nanosecond)
 		t2 := Now()
-		if t1 == t2 {
+		if t1 >= t2 {
 			t.Errorf(
 				"Now() after enough sleep should increment %d = %d",
 				t1,

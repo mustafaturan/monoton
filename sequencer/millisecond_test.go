@@ -6,7 +6,7 @@ import (
 )
 
 func TestNewMillisecond(t *testing.T) {
-	want := reflect.TypeOf(&Millisecond{})
+	want := reflect.TypeOf(&Sequence{})
 	got := reflect.TypeOf(NewMillisecond())
 
 	if want != got {

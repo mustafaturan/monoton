@@ -57,7 +57,6 @@ package monoton
 import (
 	"fmt"
 	"math"
-	"sync"
 
 	"github.com/mustafaturan/monoton/encoder"
 	"github.com/mustafaturan/monoton/sequencer"
@@ -70,25 +69,20 @@ const (
 )
 
 type config struct {
-	sync.Mutex
-	sequencer       sequencer.Sequencer
+	sequencer       *sequencer.Sequencer
+	initialTime     uint
 	node            string
 	timeSeqByteSize int64
 	seqByteSize     int64
-	initialTime     uint
 }
 
 var c config
-
-func init() {
-	Configure(sequencer.NewMillisecond(), 0, 0)
-}
 
 // Configure configures the monoton with the given generator and node. If you
 // need to reset the node, then you have to reconfigure. If you do not configure
 // the node then the node will be set to zero value.
 func Configure(s sequencer.Sequencer, node, initialTime uint) error {
-	c = config{sequencer: s, initialTime: initialTime}
+	c = config{sequencer: &s, initialTime: initialTime}
 
 	if err := configureByteSizes(); err != nil {
 		return err
@@ -108,25 +102,19 @@ func Configure(s sequencer.Sequencer, node, initialTime uint) error {
 //
 // For byte size decisions please refer to docs/adrs/byte-sizes.md
 func Next() string {
-	t, seq := next()
+	t, seq := (*c.sequencer).Next()
 
 	return encoder.ToBase62WithPaddingZeros(t-c.initialTime, c.timeSeqByteSize) +
 		encoder.ToBase62WithPaddingZeros(seq, c.seqByteSize) +
 		c.node
 }
 
-func next() (uint, uint) {
-	c.Lock()
-	defer c.Unlock()
-
-	return c.sequencer.Next()
-}
-
 func configureByteSizes() error {
-	maxSeqTime := encoder.ToBase62(uint64(c.sequencer.MaxSequenceTime()))
+	sequencer := *c.sequencer
+	maxSeqTime := encoder.ToBase62(uint64(sequencer.MaxTime()))
 	c.timeSeqByteSize = int64(len(maxSeqTime))
 
-	maxSeq := encoder.ToBase62(uint64(c.sequencer.MaxSequence()))
+	maxSeq := encoder.ToBase62(uint64(sequencer.Max()))
 	c.seqByteSize = int64(len(maxSeq))
 
 	// At least one byte slot is necessary for the node

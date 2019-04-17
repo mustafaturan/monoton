@@ -6,7 +6,7 @@ import (
 )
 
 func TestNewSecond(t *testing.T) {
-	want := reflect.TypeOf(&Second{})
+	want := reflect.TypeOf(&Sequence{})
 	got := reflect.TypeOf(NewSecond())
 
 	if want != got {

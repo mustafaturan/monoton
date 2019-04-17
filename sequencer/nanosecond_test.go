@@ -6,7 +6,7 @@ import (
 )
 
 func TestNewNanosecond(t *testing.T) {
-	want := reflect.TypeOf(&Nanosecond{})
+	want := reflect.TypeOf(&Sequence{})
 	got := reflect.TypeOf(NewNanosecond())
 
 	if want != got {

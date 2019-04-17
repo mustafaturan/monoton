@@ -53,10 +53,10 @@ package sequencer
 
 // Sequencer is a generic behavior for the sequence generators
 type Sequencer interface {
-	// Next increments the time and related counter sequences
+	// Max returns the maximum possible sequence value for a given time
+	Max() uint
+	// MaxTime returns the maximum possible time sequence value
+	MaxTime() uint
+	// Now returns the current monotonic time
 	Next() (uint, uint)
-	// MaxSequenceTime returns the maximum possible time sequence value
-	MaxSequenceTime() uint
-	// MaxSequence returns the maximum possible sequence value for a given time
-	MaxSequence() uint
 }

@@ -100,11 +100,11 @@ type invalidSequencer struct {
 	counter uint
 }
 
-func (v *validSequencer) MaxSequenceTime() uint {
+func (v *validSequencer) MaxTime() uint {
 	return uint(math.Pow(62, 8)) - 1
 }
 
-func (v *validSequencer) MaxSequence() uint {
+func (v *validSequencer) Max() uint {
 	return uint(math.Pow(62, 6)) - 1
 }
 
@@ -113,11 +113,11 @@ func (v *validSequencer) Next() (uint, uint) {
 	return 1, v.counter
 }
 
-func (i *invalidSequencer) MaxSequenceTime() uint {
+func (i *invalidSequencer) MaxTime() uint {
 	return uint(math.Pow(62, 8)) - 1
 }
 
-func (i *invalidSequencer) MaxSequence() uint {
+func (i *invalidSequencer) Max() uint {
 	return uint(math.Pow(62, 8)) - 1
 }
 
