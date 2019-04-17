@@ -33,8 +33,9 @@ func (s *Sequence) Next() (uint, uint) {
 }
 
 func (s *Sequence) increment() {
-	if s.time < s.now() {
-		s.time = s.now()
+	now := s.now()
+	if s.time < now {
+		s.time = now
 		s.current = 0
 	} else {
 		s.current++
