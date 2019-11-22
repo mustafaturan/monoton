@@ -28,13 +28,13 @@ import (
 // On init configure the monoton
 func init() {
 	// Fetch your node id from a config server or generate from MAC/IP address
-	node := uint(1)
+	node := uint64(1)
 
 	// A unix time value which will be subtracted from the time sequence value.
 	// The initialTime value type corresponds to the sequencer type's time
 	// representation. If you are using Millisecond sequencer then it must be
 	// considered as Millisecond
-	initialTime := uint(0)
+	initialTime := uint64(0)
 
 	// Configure monoton with a sequencer and the node
 	monoton.Configure(sequencer.NewMillisecond(), node, initialTime)
