@@ -12,35 +12,35 @@ import (
 func TestConfigure(t *testing.T) {
 	tests := []struct {
 		s           sequencer.Sequencer
-		node        uint
-		initialTime uint
+		node        uint64
+		initialTime uint64
 		wantErr     error
 		wantNode    string
-		wantTime    uint
+		wantTime    uint64
 	}{
 		{
 			&validSequencer{},
 			3843,
-			uint(1),
+			uint64(1),
 			nil,
 			"zz",
-			uint(1),
+			uint64(1),
 		},
 		{
 			&validSequencer{},
 			3844,
-			uint(2),
+			uint64(2),
 			errors.New("node can't be greater than 3843 (given 3844)"),
 			"",
-			uint(2),
+			uint64(2),
 		},
 		{
 			&invalidSequencer{},
 			1,
-			uint(0),
+			uint64(0),
 			errors.New("sum of s:8, t:8 bytes can't be >= total byte size"),
 			"",
-			uint(0),
+			uint64(0),
 		},
 	}
 
@@ -93,34 +93,34 @@ func TestNext(t *testing.T) {
 }
 
 type validSequencer struct {
-	counter uint
+	counter uint64
 }
 
 type invalidSequencer struct {
-	counter uint
+	counter uint64
 }
 
-func (v *validSequencer) MaxTime() uint {
-	return uint(math.Pow(62, 8)) - 1
+func (v *validSequencer) MaxTime() uint64 {
+	return uint64(math.Pow(62, 8)) - 1
 }
 
-func (v *validSequencer) Max() uint {
-	return uint(math.Pow(62, 6)) - 1
+func (v *validSequencer) Max() uint64 {
+	return uint64(math.Pow(62, 6)) - 1
 }
 
-func (v *validSequencer) Next() (uint, uint) {
+func (v *validSequencer) Next() (uint64, uint64) {
 	v.counter++
 	return 1, v.counter
 }
 
-func (i *invalidSequencer) MaxTime() uint {
-	return uint(math.Pow(62, 8)) - 1
+func (i *invalidSequencer) MaxTime() uint64 {
+	return uint64(math.Pow(62, 8)) - 1
 }
 
-func (i *invalidSequencer) Max() uint {
-	return uint(math.Pow(62, 8)) - 1
+func (i *invalidSequencer) Max() uint64 {
+	return uint64(math.Pow(62, 8)) - 1
 }
 
-func (i *invalidSequencer) Next() (uint, uint) {
+func (i *invalidSequencer) Next() (uint64, uint64) {
 	return 1, i.counter
 }

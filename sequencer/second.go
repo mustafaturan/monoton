@@ -12,9 +12,9 @@ import (
 
 // NewSecond returns the preconfigured second sequencer
 func NewSecond() *Sequence {
-	second := uint(time.Second)
+	second := uint64(time.Second)
 	return &Sequence{
-		now:     func() uint { return mtimer.Now() / second },
+		now:     func() uint64 { return mtimer.Now() / second },
 		max:     62*62*62*62*62*62 - 1,
 		maxTime: 62*62*62*62*62*62 - 1,
 	}

@@ -70,7 +70,7 @@ const (
 
 type config struct {
 	sequencer       *sequencer.Sequencer
-	initialTime     uint
+	initialTime     uint64
 	node            string
 	timeSeqByteSize int64
 	seqByteSize     int64
@@ -81,7 +81,7 @@ var c config
 // Configure configures the monoton with the given generator and node. If you
 // need to reset the node, then you have to reconfigure. If you do not configure
 // the node then the node will be set to zero value.
-func Configure(s sequencer.Sequencer, node, initialTime uint) error {
+func Configure(s sequencer.Sequencer, node, initialTime uint64) error {
 	c = config{sequencer: &s, initialTime: initialTime}
 
 	if err := configureByteSizes(); err != nil {
@@ -125,7 +125,7 @@ func configureByteSizes() error {
 	return nil
 }
 
-func configureNode(node uint) error {
+func configureNode(node uint64) error {
 	nodeByteSize := totalByteSize - (c.timeSeqByteSize + c.seqByteSize)
 
 	if err := validateNode(node, nodeByteSize); err != nil {
@@ -136,8 +136,8 @@ func configureNode(node uint) error {
 	return nil
 }
 
-func validateNode(node uint, nodeByteSize int64) error {
-	maxNode := uint(math.Pow(62, float64(nodeByteSize))) - 1
+func validateNode(node uint64, nodeByteSize int64) error {
+	maxNode := uint64(math.Pow(62, float64(nodeByteSize))) - 1
 
 	if node > maxNode {
 		return fmt.Errorf(maxNodeErrorMsg, maxNode, node)

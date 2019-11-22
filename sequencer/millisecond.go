@@ -12,9 +12,9 @@ import (
 
 // NewMillisecond returns the preconfigured millisecond sequencer
 func NewMillisecond() *Sequence {
-	millisecond := uint(time.Millisecond)
+	millisecond := uint64(time.Millisecond)
 	return &Sequence{
-		now:     func() uint { return mtimer.Now() / millisecond },
+		now:     func() uint64 { return mtimer.Now() / millisecond },
 		max:     62*62*62*62 - 1,
 		maxTime: 62*62*62*62*62*62*62*62 - 1,
 	}
