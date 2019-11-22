@@ -6,25 +6,25 @@ import "sync"
 type Sequence struct {
 	sync.Mutex
 
-	current uint
-	time    uint
-	max     uint
-	maxTime uint
-	now     func() uint
+	current uint64
+	time    uint64
+	max     uint64
+	maxTime uint64
+	now     func() uint64
 }
 
 // Max returns the maximum possible sequence value
-func (s *Sequence) Max() uint {
+func (s *Sequence) Max() uint64 {
 	return s.max
 }
 
 // MaxTime returns the maximum possible time sequence value
-func (s *Sequence) MaxTime() uint {
+func (s *Sequence) MaxTime() uint64 {
 	return s.maxTime
 }
 
 // Next returns the next sequence
-func (s *Sequence) Next() (uint, uint) {
+func (s *Sequence) Next() (uint64, uint64) {
 	s.Lock()
 	defer s.Unlock()
 

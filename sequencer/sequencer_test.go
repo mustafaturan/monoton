@@ -9,12 +9,12 @@ import (
 
 func TestMaxTime(t *testing.T) {
 	tests := []struct {
-		wantMaxTime uint
+		wantMaxTime uint64
 		seq         Sequencer
 	}{
-		{uint(math.Pow(62, 6) - 1), NewSecond()},
-		{uint(math.Pow(62, 8) - 1), NewMillisecond()},
-		{uint(1<<64 - 1), NewNanosecond()},
+		{uint64(math.Pow(62, 6) - 1), NewSecond()},
+		{uint64(math.Pow(62, 8) - 1), NewMillisecond()},
+		{uint64(1<<64 - 1), NewNanosecond()},
 	}
 
 	for _, test := range tests {
@@ -33,12 +33,12 @@ func TestMaxTime(t *testing.T) {
 
 func TestMax(t *testing.T) {
 	tests := []struct {
-		wantMax uint
+		wantMax uint64
 		seq     Sequencer
 	}{
-		{uint(math.Pow(62, 6) - 1), NewSecond()},
-		{uint(math.Pow(62, 4) - 1), NewMillisecond()},
-		{uint(math.Pow(62, 2) - 1), NewNanosecond()},
+		{uint64(math.Pow(62, 6) - 1), NewSecond()},
+		{uint64(math.Pow(62, 4) - 1), NewMillisecond()},
+		{uint64(math.Pow(62, 2) - 1), NewNanosecond()},
 	}
 
 	for _, test := range tests {
@@ -69,8 +69,8 @@ func TestNext(t *testing.T) {
 		sequencer := test.sequencer
 
 		t.Run("at the same time", func(t *testing.T) {
-			sequenceTimeVals := [2]uint{1, 2}
-			sequenceVals := [2]uint{0, 0}
+			sequenceTimeVals := [2]uint64{1, 2}
+			sequenceVals := [2]uint64{0, 0}
 
 			// Loops until we have the same time for two calls
 			for sequenceTimeVals[0] != sequenceTimeVals[1] {
@@ -103,7 +103,7 @@ func TestNext(t *testing.T) {
 	for _, test := range futureTimeTests {
 		sequencer := test.sequencer
 		t.Run("in a future time", func(t *testing.T) {
-			sequenceTimeVals := [2]uint{0, 0}
+			sequenceTimeVals := [2]uint64{0, 0}
 
 			sequenceTimeVals[0], _ = sequencer.Next()
 			time.Sleep(test.sleepDuration)

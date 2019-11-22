@@ -38,7 +38,7 @@ func ToBase62(u uint64) string {
 
 // ToBase62WithPaddingZeros converts int types to Base62 encoded string with
 // padding zeros
-func ToBase62WithPaddingZeros(u uint, padding int64) string {
+func ToBase62WithPaddingZeros(u uint64, padding int64) string {
 	formatter := "%+0" + strconv.FormatInt(padding, 10) + "s"
 	return fmt.Sprintf(formatter, ToBase62(uint64(u)))
 }

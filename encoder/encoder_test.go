@@ -23,7 +23,7 @@ func TestToBase62(t *testing.T) {
 
 func TestToBase62WithPaddingZeros(t *testing.T) {
 	tests := []struct {
-		val     uint
+		val     uint64
 		padding int64
 		want    string
 	}{

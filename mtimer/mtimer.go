@@ -6,14 +6,14 @@ import (
 )
 
 var initialTime time.Time
-var monotonicTime uint
+var monotonicTime uint64
 
 func init() {
 	initialTime = time.Now()
-	monotonicTime = uint(initialTime.UnixNano())
+	monotonicTime = uint64(initialTime.UnixNano())
 }
 
 // Now returns the current monotonic time in nanoseconds
-func Now() uint {
-	return monotonicTime + uint(time.Since(initialTime).Nanoseconds())
+func Now() uint64 {
+	return monotonicTime + uint64(time.Since(initialTime).Nanoseconds())
 }

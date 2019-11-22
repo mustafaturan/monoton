@@ -13,6 +13,6 @@ func NewNanosecond() *Sequence {
 	return &Sequence{
 		now:     mtimer.Now,
 		max:     62*62 - 1,
-		maxTime: uint(1<<64 - 1),
+		maxTime: uint64(1<<64 - 1),
 	}
 }
