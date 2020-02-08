@@ -5,15 +5,20 @@ import (
 	"time"
 )
 
-var initialTime time.Time
-var monotonicTime uint64
+// Timer is a monotonic time ticker
+type Timer struct {
+	initialTime   time.Time
+	monotonicTime uint64
+}
 
-func init() {
-	initialTime = time.Now()
-	monotonicTime = uint64(initialTime.UnixNano())
+// New inits the timer using current system time values
+func New() Timer {
+	initialTime := time.Now()
+	monotonicTime := uint64(initialTime.UnixNano())
+	return Timer{initialTime: initialTime, monotonicTime: monotonicTime}
 }
 
 // Now returns the current monotonic time in nanoseconds
-func Now() uint64 {
-	return monotonicTime + uint64(time.Since(initialTime).Nanoseconds())
+func (t Timer) Now() uint64 {
+	return t.monotonicTime + uint64(time.Since(t.initialTime).Nanoseconds())
 }

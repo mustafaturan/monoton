@@ -1,3 +1,7 @@
+// Copyright 2020 Mustafa Turan. All rights reserved.
+// Use of this source code is governed by a Apache License 2.0 license that can
+// be found in the LICENSE file.
+
 package sequencer
 
 import (
@@ -42,6 +46,7 @@ func TestMax(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		gotMax := test.seq.Max()
 
 		if test.wantMax != gotMax {
@@ -66,6 +71,7 @@ func TestNext(t *testing.T) {
 	}
 
 	for _, test := range sameMomentTests {
+		test := test
 		sequencer := test.sequencer
 
 		t.Run("at the same time", func(t *testing.T) {
@@ -101,6 +107,7 @@ func TestNext(t *testing.T) {
 	}
 
 	for _, test := range futureTimeTests {
+		test := test
 		sequencer := test.sequencer
 		t.Run("in a future time", func(t *testing.T) {
 			sequenceTimeVals := [2]uint64{0, 0}
