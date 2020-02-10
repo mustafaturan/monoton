@@ -13,7 +13,75 @@ generator.
 Via go packages:
 ```go get github.com/mustafaturan/monoton```
 
+## API
+
+The method names and arities/args are stable now. No change should be expected
+on the package for the version `1.x.x` except any bug fixes.
+
 ## Usage
+
+### Using with Singleton
+
+Create a new package like below, and then call `Next()` method:
+
+```go
+package uniqid
+
+// Import packages
+import (
+	"fmt"
+	"github.com/mustafaturan/monoton"
+	"github.com/mustafaturan/monoton/sequencer"
+)
+
+var m monoton.Monoton
+
+// On init configure the monoton
+func init() {
+	m = *(newIDGenerator())
+}
+
+func newIDGenerator() *monoton.Monoton {
+	// Fetch your node id from a config server or generate from MAC/IP address
+	node := uint64(1)
+
+	// A unix time value which will be subtracted from the time sequence value.
+	// The initialTime value type corresponds to the sequencer type's time
+	// representation. If you are using Millisecond sequencer then it must be
+	// considered as Millisecond
+	// If we want to init the time with 2020-01-01 00:00:00 PST
+	initialTime := uint64(1577865600000)
+
+	// Configure monoton with a sequencer and the node
+	m, err = monoton.New(sequencer.NewMillisecond(), node, initialTime)
+	if err != nil{
+		panic(err)
+	}
+
+	return m
+}
+
+func Generate() string {
+	m.Next()
+}
+```
+
+In any other package generate the ids like below:
+
+```go
+import (
+	"fmt"
+	"uniqid" // your local uniqid package from your project
+)
+
+func main() {
+	for i := 0; i < 100; i++ {
+		fmt.Println(uniqid.Generate())
+	}
+}
+```
+
+### Using with Dependency Injection
 
 ```go
 package main
@@ -25,8 +93,7 @@ import (
 	"github.com/mustafaturan/monoton/sequencer"
 )
 
-// On init configure the monoton
-func init() {
+func NewIDGenerator() *monoton.Monoton {
 	// Fetch your node id from a config server or generate from MAC/IP address
 	node := uint64(1)
 
@@ -37,12 +104,19 @@ func init() {
 	initialTime := uint64(0)
 
 	// Configure monoton with a sequencer and the node
-	monoton.Configure(sequencer.NewMillisecond(), node, initialTime)
+	m, err = monoton.New(sequencer.NewMillisecond(), node, initialTime)
+	if err != nil{
+		panic(err)
+	}
+
+	return m
 }
 
 func main() {
+	g := NewIDGenerator()
+
 	for i := 0; i < 100; i++ {
-		fmt.Println(monoton.Next())
+		fmt.Println(g.Next())
 	}
 }
 ```

@@ -1,3 +1,7 @@
+// Copyright 2020 Mustafa Turan. All rights reserved.
+// Use of this source code is governed by a Apache License 2.0 license that can
+// be found in the LICENSE file.
+
 package sequencer
 
 import (
@@ -26,15 +30,17 @@ func TestMaxTime_Sequence(t *testing.T) {
 }
 
 func TestNext_Sequence(t *testing.T) {
+	timer := mtimer.New()
 	tests := []struct {
 		want uint64
 		now  func() uint64
 	}{
 		{want: uint64(2), now: func() uint64 { return 0 }},
-		{want: uint64(0), now: func() uint64 { time.Sleep(time.Nanosecond); return mtimer.Now() }},
+		{want: uint64(0), now: func() uint64 { time.Sleep(time.Nanosecond); return timer.Now() }},
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run("resets counter correctly when time changes", func(t *testing.T) {
 			t.Parallel()
 			s := &Sequence{now: test.now}

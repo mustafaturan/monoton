@@ -1,3 +1,7 @@
+// Copyright 2020 Mustafa Turan. All rights reserved.
+// Use of this source code is governed by a Apache License 2.0 license that can
+// be found in the LICENSE file.
+
 package monoton
 
 import (
@@ -9,7 +13,7 @@ import (
 	"github.com/mustafaturan/monoton/sequencer"
 )
 
-func TestConfigure(t *testing.T) {
+func TestNew(t *testing.T) {
 	tests := []struct {
 		s           sequencer.Sequencer
 		node        uint64
@@ -26,6 +30,16 @@ func TestConfigure(t *testing.T) {
 			"zz",
 			uint64(1),
 		},
+	}
+
+	errorTests := []struct {
+		s           sequencer.Sequencer
+		node        uint64
+		initialTime uint64
+		wantErr     error
+		wantNode    string
+		wantTime    uint64
+	}{
 		{
 			&validSequencer{},
 			3844,
@@ -38,32 +52,48 @@ func TestConfigure(t *testing.T) {
 			&invalidSequencer{},
 			1,
 			uint64(0),
-			errors.New("sum of s:8, t:8 bytes can't be >= total byte size"),
+			errors.New("max byte size sum of sequence(8) and time sequence(8) can't be >= total byte size(16)"),
 			"",
 			uint64(0),
 		},
 	}
 
-	configureMsg := "Configure(%v, %d, %d) want: %v, got: %v"
-	nodeMsg := "Configure(%v, %d, _) want node: %s, got node: %s"
-	timeMsg := "Configure(%v, _, %d) want time: %d, got time: %d"
+	configureMsg := "New(%v, %d, %d) want: %v, got: %v"
+	nodeMsg := "New(%v, %d, _) want node: %s, got node: %s"
+	timeMsg := "New(%v, _, %d) want time: %d, got time: %d"
 	for _, test := range tests {
-		got := Configure(test.s, test.node, test.initialTime)
+		test := test
+		got, err := New(test.s, test.node, test.initialTime)
 
 		t.Run("assigns node val correctly", func(t *testing.T) {
-			if c.node != test.wantNode {
-				t.Errorf(nodeMsg, test.s, test.node, test.wantNode, c.node)
+			if got.node != test.wantNode {
+				t.Errorf(nodeMsg, test.s, test.node, test.wantNode, got.node)
 			}
 		})
 
 		t.Run("assigns initialTime val correctly", func(t *testing.T) {
-			if c.initialTime != test.wantTime {
-				t.Errorf(timeMsg, test.s, test.initialTime, test.wantTime, c.initialTime)
+			if got.initialTime != test.wantTime {
+				t.Errorf(timeMsg, test.s, test.initialTime, test.wantTime, got.initialTime)
 			}
 		})
 
+		t.Run("must not have error", func(t *testing.T) {
+			if err != test.wantErr {
+				t.Errorf("want %+v but got %+v", test.wantErr, err)
+			}
+		})
+	}
+
+	for _, test := range errorTests {
+		test := test
+		got, err := New(test.s, test.node, test.initialTime)
+		t.Run("must not initialize", func(t *testing.T) {
+			if got != nil {
+				t.Errorf("want nil but got %+v", got)
+			}
+		})
 		t.Run("errors with correct message", func(t *testing.T) {
-			if got != test.wantErr && got.Error() != test.wantErr.Error() {
+			if err != test.wantErr && err.Error() != test.wantErr.Error() {
 				t.Errorf(configureMsg, test.s, test.node, test.initialTime, test.wantErr, got)
 			}
 		})
@@ -71,8 +101,8 @@ func TestConfigure(t *testing.T) {
 }
 
 func TestNext(t *testing.T) {
-	Configure(&validSequencer{}, 3843, 0)
-	m1, m2 := Next(), Next()
+	m, _ := New(&validSequencer{}, 3843, 0)
+	m1, m2 := m.Next(), m.Next()
 
 	t.Run("generates greater sequences on each call", func(t *testing.T) {
 		t.Parallel()
