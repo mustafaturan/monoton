@@ -35,7 +35,7 @@ func TestNext_Sequence(t *testing.T) {
 		want uint64
 		now  func() uint64
 	}{
-		{want: uint64(2), now: func() uint64 { return 0 }},
+		{want: uint64(3), now: func() uint64 { return 0 }},
 		{want: uint64(0), now: func() uint64 { time.Sleep(time.Nanosecond); return timer.Now() }},
 	}
 
