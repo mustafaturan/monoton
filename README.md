@@ -196,10 +196,10 @@ goos: darwin
 goarch: amd64
 pkg: github.com/mustafaturan/monoton/v2
 cpu: Intel(R) Core(TM) i5-6267U CPU @ 2.90GHz
-BenchmarkNext-4        	10000000	       121.4 ns/op	       0 B/op	       0 allocs/op
-BenchmarkNextBytes-4   	10000000	       115.5 ns/op	       0 B/op	       0 allocs/op
+BenchmarkNext-4        	10000000	       108.7 ns/op	       0 B/op	       0 allocs/op
+BenchmarkNextBytes-4   	10000000	        99.88 ns/op	       0 B/op	       0 allocs/op
 PASS
-ok  	github.com/mustafaturan/monoton/v2	2.639s
+ok  	github.com/mustafaturan/monoton/v2	2.194s
 ```
 
 ## Contributing
