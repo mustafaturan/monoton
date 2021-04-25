@@ -4,12 +4,12 @@
 
 package sequencer
 
-import "sync"
+import (
+	"sync/atomic"
+)
 
 // Sequence is an implementation of sequencer
 type Sequence struct {
-	mutex sync.Mutex
-
 	current uint64
 	time    uint64
 	max     uint64
@@ -29,19 +29,15 @@ func (s *Sequence) MaxTime() uint64 {
 
 // Next returns the next sequence
 func (s *Sequence) Next() (uint64, uint64) {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-
-	s.increment()
-	return s.time, s.current
-}
-
-func (s *Sequence) increment() {
 	now := s.now()
-	if s.time < now {
-		s.time = now
-		s.current = 0
+	time := atomic.LoadUint64(&s.time)
+	var current uint64
+	if time < now {
+		time = now
+		atomic.StoreUint64(&s.time, time)
+		atomic.StoreUint64(&s.current, 0)
 	} else {
-		s.current++
+		current = atomic.AddUint64(&s.current, 1)
 	}
+	return time, current
 }
