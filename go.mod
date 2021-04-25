@@ -1,3 +1,3 @@
-module github.com/mustafaturan/monoton
+module github.com/mustafaturan/monoton/v2
 
-go 1.9
+go 1.16

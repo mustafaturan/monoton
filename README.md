@@ -1,28 +1,28 @@
 # Monoton
 
 [![Build Status](https://travis-ci.org/mustafaturan/monoton.svg?branch=master)](https://travis-ci.org/mustafaturan/monoton)
-[![Coverage Status](https://coveralls.io/repos/github/mustafaturan/monoton/badge.svg?branch=master)](https://coveralls.io/github/mustafaturan/monoton?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/mustafaturan/monoton/badge.svg?branch=master)](https://coveralls.io/github/mustafaturan/monoton?branch=main)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mustafaturan/monoton)](https://goreportcard.com/report/github.com/mustafaturan/monoton)
-[![GoDoc](https://godoc.org/github.com/mustafaturan/monoton?status.svg)](https://godoc.org/github.com/mustafaturan/monoton)
+[![GoDoc](https://godoc.org/github.com/mustafaturan/monoton?status.svg)](https://godoc.org/github.com/mustafaturan/monoton/v2)
 
 Highly scalable, single/multi node, predictable and incremental unique id
-generator.
+generator with zero allocation magic.
 
 ## Installation
 
 Via go packages:
-```go get github.com/mustafaturan/monoton```
+```go get github.com/mustafaturan/monoton/v2```
 
 ## API
 
 The method names and arities/args are stable now. No change should be expected
-on the package for the version `1.x.x` except any bug fixes.
+on the package for the version `2.x.x` except any bug fixes.
 
 ## Usage
 
 ### Using with Singleton
 
-Create a new package like below, and then call `Next()` method:
+Create a new package like below, and then call `Next()` or `NextBytes()` method:
 
 ```go
 package uniqid
@@ -30,18 +30,18 @@ package uniqid
 // Import packages
 import (
 	"fmt"
-	"github.com/mustafaturan/monoton"
-	"github.com/mustafaturan/monoton/sequencer"
+	"github.com/mustafaturan/monoton/v2"
+	"github.com/mustafaturan/monoton/v2/sequencer"
 )
 
 var m monoton.Monoton
 
 // On init configure the monoton
 func init() {
-	m = *(newIDGenerator())
+	m = newIDGenerator()
 }
 
-func newIDGenerator() *monoton.Monoton {
+func newIDGenerator() monoton.Monoton {
 	// Fetch your node id from a config server or generate from MAC/IP address
 	node := uint64(1)
 
@@ -63,6 +63,10 @@ func newIDGenerator() *monoton.Monoton {
 
 func Generate() string {
 	m.Next()
+}
+
+func GeneateBytes() [16]byte {
+	m.NextBytes()
 }
 ```
 
@@ -89,8 +93,8 @@ package main
 // Import packages
 import (
 	"fmt"
-	"github.com/mustafaturan/monoton"
-	"github.com/mustafaturan/monoton/sequencer"
+	"github.com/mustafaturan/monoton/v2"
+	"github.com/mustafaturan/monoton/v2/sequencer"
 )
 
 func NewIDGenerator() *monoton.Monoton {
@@ -178,6 +182,25 @@ consequences.
 
 The sequencers can be extended for any other time format, sequence format by
 implementing the `monoton/sequencer.Sequencer` interface.
+
+## Benchmarks
+
+Command:
+```
+go test -benchtime 10000000x -benchmem -run=^$ -bench=. github.com/mustafaturan/monoton/v2
+```
+
+Results:
+```
+goos: darwin
+goarch: amd64
+pkg: github.com/mustafaturan/monoton/v2
+cpu: Intel(R) Core(TM) i5-6267U CPU @ 2.90GHz
+BenchmarkNext-4        	10000000	       121.4 ns/op	       0 B/op	       0 allocs/op
+BenchmarkNextBytes-4   	10000000	       115.5 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/mustafaturan/monoton/v2	2.639s
+```
 
 ## Contributing
 

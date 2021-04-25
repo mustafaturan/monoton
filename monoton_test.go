@@ -1,16 +1,17 @@
-// Copyright 2020 Mustafa Turan. All rights reserved.
+// Copyright 2021 Mustafa Turan. All rights reserved.
 // Use of this source code is governed by a Apache License 2.0 license that can
 // be found in the LICENSE file.
 
 package monoton
 
 import (
+	"bytes"
 	"errors"
 	"math"
 	"strings"
 	"testing"
 
-	"github.com/mustafaturan/monoton/sequencer"
+	"github.com/mustafaturan/monoton/v2/sequencer"
 )
 
 func TestNew(t *testing.T) {
@@ -52,7 +53,7 @@ func TestNew(t *testing.T) {
 			&invalidSequencer{},
 			1,
 			uint64(0),
-			errors.New("max byte size sum of sequence(8) and time sequence(8) can't be >= total byte size(16)"),
+			errors.New("max byte size sum of sequence(8) and time sequence(8) can't be >= total byte size(16), at least 1 byte slot is needed for node"),
 			"",
 			uint64(0),
 		},
@@ -66,7 +67,7 @@ func TestNew(t *testing.T) {
 		got, err := New(test.s, test.node, test.initialTime)
 
 		t.Run("assigns node val correctly", func(t *testing.T) {
-			if got.node != test.wantNode {
+			if string(got.node) != test.wantNode {
 				t.Errorf(nodeMsg, test.s, test.node, test.wantNode, got.node)
 			}
 		})
@@ -86,15 +87,10 @@ func TestNew(t *testing.T) {
 
 	for _, test := range errorTests {
 		test := test
-		got, err := New(test.s, test.node, test.initialTime)
-		t.Run("must not initialize", func(t *testing.T) {
-			if got != nil {
-				t.Errorf("want nil but got %+v", got)
-			}
-		})
+		_, err := New(test.s, test.node, test.initialTime)
 		t.Run("errors with correct message", func(t *testing.T) {
 			if err != test.wantErr && err.Error() != test.wantErr.Error() {
-				t.Errorf(configureMsg, test.s, test.node, test.initialTime, test.wantErr, got)
+				t.Errorf(configureMsg, test.s, test.node, test.initialTime, test.wantErr, err.Error())
 			}
 		})
 	}
@@ -117,6 +113,28 @@ func TestNext(t *testing.T) {
 		for _, r := range results {
 			if len(r) != 16 {
 				t.Errorf("Next(): %s couldn't produce 16 bytes string", r)
+			}
+		}
+	})
+}
+
+func TestNextBytes(t *testing.T) {
+	m, _ := New(&validSequencer{}, 3843, 0)
+	m1, m2 := m.NextBytes(), m.NextBytes()
+
+	t.Run("generates greater sequences on each call", func(t *testing.T) {
+		t.Parallel()
+		if bytes.Compare(m1[:], m2[:]) >= 0 {
+			t.Errorf("Next(): %s >= Next(): %s", m1, m2)
+		}
+	})
+
+	t.Run("generates 16 bytes sequences", func(t *testing.T) {
+		t.Parallel()
+		results := [][]byte{m1[:], m2[:]}
+		for _, r := range results {
+			if len(r) != 16 {
+				t.Errorf("Next(): %s couldn't produce 16 bytes", r)
 			}
 		}
 	})
