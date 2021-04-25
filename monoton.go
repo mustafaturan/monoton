@@ -223,7 +223,6 @@ func (m Monoton) NextBytes() [16]byte {
 }
 
 func (m *Monoton) configureByteSizes() error {
-	// sequencer := m.sequencer
 	maxTimeSeqByteSize := encoder.Base62ByteSize(m.sequencer.MaxTime())
 	maxSeqByteSize := encoder.Base62ByteSize(m.sequencer.Max())
 
