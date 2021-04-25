@@ -1,4 +1,4 @@
-// Copyright 2020 Mustafa Turan. All rights reserved.
+// Copyright 2021 Mustafa Turan. All rights reserved.
 // Use of this source code is governed by a Apache License 2.0 license that can
 // be found in the LICENSE file.
 
@@ -60,8 +60,8 @@ Example using Singleton
 	// Import packages
 	import (
 		"fmt"
-		"github.com/mustafaturan/monoton"
-		"github.com/mustafaturan/monoton/sequencer"
+		"github.com/mustafaturan/monoton/v2"
+		"github.com/mustafaturan/monoton/v2/sequencer"
 	)
 
 	const year2020asMillisecondPST = 1577865600000
@@ -70,10 +70,10 @@ Example using Singleton
 
 	// On init configure the monoton
 	func init() {
-		m = *(newIDGenerator()) // to store in the stack
+		m = newIDGenerator()
 	}
 
-	func newIDGenerator() *monoton.Monoton {
+	func newIDGenerator() monoton.Monoton {
 		// Fetch your node id from a config server or generate from MAC/IP
 		// address
 		node := uint64(1)
@@ -119,14 +119,16 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/mustafaturan/monoton/encoder"
-	"github.com/mustafaturan/monoton/sequencer"
+	"github.com/mustafaturan/monoton/v2/encoder"
+	"github.com/mustafaturan/monoton/v2/sequencer"
 )
 
 const (
 	totalByteSize  = 16
 	errMaxNode     = "node can't be greater than %d (given %d)"
-	errMaxByteSize = "max byte size sum of sequence(%d) and time sequence(%d) can't be >= total byte size(%d)"
+	errMaxByteSize = "max byte size sum of sequence(%d) and time sequence(%d) " +
+		"can't be >= total byte size(%d), " +
+		"at least 1 byte slot is needed for node"
 )
 
 // MaxNodeCapacityExceededError is an error type with node information
@@ -141,12 +143,9 @@ func (e *MaxNodeCapacityExceededError) Error() string {
 
 // MaxByteSizeError is an error type with sequence & time byte sizes
 type MaxByteSizeError struct {
-	ByteSizeSequence     int64
-	ByteSizeSequenceTime int64
-	ByteSizeTotal        int64
-
-	MaxSequence     string
-	MaxSequenceTime string
+	ByteSizeSequence     int
+	ByteSizeSequenceTime int
+	ByteSizeTotal        int
 }
 
 func (e *MaxByteSizeError) Error() string {
@@ -160,63 +159,85 @@ func (e *MaxByteSizeError) Error() string {
 
 // Monoton is a sequential id generator
 type Monoton struct {
-	sequencer       *sequencer.Sequencer
 	initialTime     uint64
-	node            string
-	timeSeqByteSize int64
-	seqByteSize     int64
+	timeSeqByteSize int
+	seqByteSize     int
+	sequencer       sequencer.Sequencer
+	node            []byte
 }
 
 // New inits a new monoton ID generator with the given generator and node.
-func New(s sequencer.Sequencer, node, initialTime uint64) (*Monoton, error) {
-	m := &Monoton{sequencer: &s, initialTime: initialTime}
+func New(s sequencer.Sequencer, node, initialTime uint64) (Monoton, error) {
+	m := Monoton{sequencer: s, initialTime: initialTime}
 
 	if err := m.configureByteSizes(); err != nil {
-		return nil, err
+		return Monoton{}, err
 	}
 
 	if err := m.configureNode(node); err != nil {
-		return nil, err
+		return Monoton{}, err
 	}
 
 	return m, nil
 }
 
 // Next generates next incremental unique identifier as Base62
-// The execution will return the following Bytes (B) for the known sequencer
-// types:
+// The execution returns the following Bytes (B) for the known sequencer types:
 //
 // 	Second:      16 B =>  6 B (seconds)      + 6 B (counter) + 4 B (node)
 // 	Millisecond: 16 B =>  8 B (milliseconds) + 4 B (counter) + 4 B (node)
 // 	Nanosecond:  16 B => 11 B (nanoseconds)  + 2 B (counter) + 3 B (node)
 //
 // For byte size decisions please refer to docs/adrs/byte-sizes.md
-func (m *Monoton) Next() string {
-	t, seq := (*m.sequencer).Next()
+func (m Monoton) Next() string {
+	val := m.NextBytes()
+	return string(val[:])
+}
 
-	return encoder.ToBase62WithPaddingZeros(t-m.initialTime, m.timeSeqByteSize) +
-		encoder.ToBase62WithPaddingZeros(seq, m.seqByteSize) +
-		m.node
+// NextBytes generates next incremental unique identifier as Base62 16 bytes
+// array
+// The execution returns the following Bytes (B) for the known sequencer types:
+//
+// 	Second:      16 B =>  6 B (seconds)      + 6 B (counter) + 4 B (node)
+// 	Millisecond: 16 B =>  8 B (milliseconds) + 4 B (counter) + 4 B (node)
+// 	Nanosecond:  16 B => 11 B (nanoseconds)  + 2 B (counter) + 3 B (node)
+//
+// For byte size decisions please refer to docs/adrs/byte-sizes.md
+func (m Monoton) NextBytes() [16]byte {
+	t, seq := m.sequencer.Next()
+	var n [totalByteSize]byte
+	copy(
+		n[0:m.timeSeqByteSize],
+		encoder.ToBase62WithPaddingZeros(t-m.initialTime, m.timeSeqByteSize),
+	)
+	copy(
+		n[m.timeSeqByteSize:m.timeSeqByteSize+m.seqByteSize],
+		encoder.ToBase62WithPaddingZeros(seq, m.seqByteSize),
+	)
+	copy(
+		n[m.timeSeqByteSize+m.seqByteSize:],
+		m.node,
+	)
+
+	return n
 }
 
 func (m *Monoton) configureByteSizes() error {
-	sequencer := *m.sequencer
-	maxSeqTime := encoder.ToBase62(sequencer.MaxTime())
-	m.timeSeqByteSize = int64(len(maxSeqTime))
-
-	maxSeq := encoder.ToBase62(sequencer.Max())
-	m.seqByteSize = int64(len(maxSeq))
+	// sequencer := m.sequencer
+	maxTimeSeqByteSize := encoder.Base62ByteSize(m.sequencer.MaxTime())
+	maxSeqByteSize := encoder.Base62ByteSize(m.sequencer.Max())
 
 	// At least one byte slot is necessary for the node
-	if m.seqByteSize+m.timeSeqByteSize >= totalByteSize {
+	if maxTimeSeqByteSize+maxSeqByteSize >= totalByteSize {
 		return &MaxByteSizeError{
-			ByteSizeSequence:     m.seqByteSize,
-			ByteSizeSequenceTime: m.timeSeqByteSize,
+			ByteSizeSequence:     maxSeqByteSize,
+			ByteSizeSequenceTime: maxTimeSeqByteSize,
 			ByteSizeTotal:        totalByteSize,
-			MaxSequence:          maxSeq,
-			MaxSequenceTime:      maxSeqTime,
 		}
 	}
+
+	m.timeSeqByteSize = maxTimeSeqByteSize
+	m.seqByteSize = maxSeqByteSize
 
 	return nil
 }
@@ -230,7 +251,7 @@ func (m *Monoton) configureNode(node uint64) error {
 	return nil
 }
 
-func (m *Monoton) validateNode(node uint64) error {
+func (m Monoton) validateNode(node uint64) error {
 	maxNode := uint64(math.Pow(62, float64(m.nodeByteSize()))) - 1
 	if node > maxNode {
 		return &MaxNodeCapacityExceededError{Node: node, MaxNode: maxNode}
@@ -239,6 +260,6 @@ func (m *Monoton) validateNode(node uint64) error {
 	return nil
 }
 
-func (m *Monoton) nodeByteSize() int64 {
+func (m Monoton) nodeByteSize() int {
 	return totalByteSize - (m.timeSeqByteSize + m.seqByteSize)
 }

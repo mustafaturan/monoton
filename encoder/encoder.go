@@ -1,4 +1,4 @@
-// Copyright 2019 Mustafa Turan. All rights reserved.
+// Copyright 2021 Mustafa Turan. All rights reserved.
 // Use of this source code is governed by a Apache License 2.0 license that can
 // be found in the LICENSE file.
 
@@ -7,20 +7,17 @@
 //
 package encoder
 
-import (
-	"fmt"
-	"strconv"
-)
-
 const (
 	maxBase62 = uint64(62)
 	mapping   = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 )
 
-// ToBase62 converts int types to Base62 encoded string
-func ToBase62(u uint64) string {
-	var a [65]byte // 64 + 1: +1 for sign of 64bit value in base 2
-	i := len(a)
+// ToBase62WithPaddingZeros converts int types to Base62 encoded byte array
+// with padding zeros
+func ToBase62WithPaddingZeros(u uint64, length int) []byte {
+	const size = 65 // 64 + 1: +1 for sign of 64bit value in base 2
+	var a [size]byte
+	i := size
 	for u >= maxBase62 {
 		i--
 		// Avoid using r = a%b in addition to q = a/maxBase62
@@ -33,12 +30,21 @@ func ToBase62(u uint64) string {
 	// when u < maxBase62
 	i--
 	a[i] = mapping[u]
-	return string(a[i:])
+	for i > size-length {
+		i--
+		a[i] = mapping[0]
+	}
+	return a[i:]
 }
 
-// ToBase62WithPaddingZeros converts int types to Base62 encoded string with
-// padding zeros
-func ToBase62WithPaddingZeros(u uint64, padding int64) string {
-	formatter := "%+0" + strconv.FormatInt(padding, 10) + "s"
-	return fmt.Sprintf(formatter, ToBase62(u))
+// Base62ByteSize returns the minimum byte size length requirement to allocate
+// the given unsigned integer's value
+func Base62ByteSize(u uint64) int {
+	i := 0
+	for u >= maxBase62 {
+		i++
+		q := u / maxBase62
+		u = q
+	}
+	return i + 1
 }

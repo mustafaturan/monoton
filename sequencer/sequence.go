@@ -1,4 +1,4 @@
-// Copyright 2020 Mustafa Turan. All rights reserved.
+// Copyright 2021 Mustafa Turan. All rights reserved.
 // Use of this source code is governed by a Apache License 2.0 license that can
 // be found in the LICENSE file.
 
@@ -8,7 +8,7 @@ import "sync"
 
 // Sequence is an implementation of sequencer
 type Sequence struct {
-	sync.Mutex
+	mutex sync.Mutex
 
 	current uint64
 	time    uint64
@@ -29,8 +29,8 @@ func (s *Sequence) MaxTime() uint64 {
 
 // Next returns the next sequence
 func (s *Sequence) Next() (uint64, uint64) {
-	s.Lock()
-	defer s.Unlock()
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 
 	s.increment()
 	return s.time, s.current
