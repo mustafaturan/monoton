@@ -97,7 +97,7 @@ import (
 	"github.com/mustafaturan/monoton/v2/sequencer"
 )
 
-func NewIDGenerator() *monoton.Monoton {
+func NewIDGenerator() monoton.Monoton {
 	// Fetch your node id from a config server or generate from MAC/IP address
 	node := uint64(1)
 
@@ -108,7 +108,7 @@ func NewIDGenerator() *monoton.Monoton {
 	initialTime := uint64(0)
 
 	// Configure monoton with a sequencer and the node
-	m, err = monoton.New(sequencer.NewMillisecond(), node, initialTime)
+	m, err := monoton.New(sequencer.NewMillisecond(), node, initialTime)
 	if err != nil{
 		panic(err)
 	}
