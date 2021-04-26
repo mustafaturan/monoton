@@ -15,7 +15,7 @@ const (
 // ToBase62WithPaddingZeros converts int types to Base62 encoded byte array
 // with padding zeros
 func ToBase62WithPaddingZeros(u uint64, length int) []byte {
-	const size = 65 // 64 + 1: +1 for sign of 64bit value in base 2
+	const size = 11 // largest uint64 in base62 occupies 11 bytes
 	var a [size]byte
 	i := size
 	for u >= maxBase62 {
