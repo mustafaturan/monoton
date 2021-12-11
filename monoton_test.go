@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mustafaturan/monoton/v2/sequencer"
+	"github.com/mustafaturan/monoton/v3/sequencer"
 )
 
 func TestNew(t *testing.T) {
@@ -148,6 +148,10 @@ type invalidSequencer struct {
 	counter uint64
 }
 
+func (v *validSequencer) MaxNode() uint64 {
+	return uint64(math.Pow(62, 2)) - 1
+}
+
 func (v *validSequencer) MaxTime() uint64 {
 	return uint64(math.Pow(62, 8)) - 1
 }
@@ -159,6 +163,10 @@ func (v *validSequencer) Max() uint64 {
 func (v *validSequencer) Next() (uint64, uint64) {
 	v.counter++
 	return 1, v.counter
+}
+
+func (i *invalidSequencer) MaxNode() uint64 {
+	return uint64(math.Pow(62, 3)) - 1
 }
 
 func (i *invalidSequencer) MaxTime() uint64 {

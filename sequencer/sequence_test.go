@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mustafaturan/monoton/v2/mtimer"
+	"github.com/mustafaturan/monoton/v3/mtimer"
 )
 
 func TestMax_Sequence(t *testing.T) {
@@ -26,6 +26,15 @@ func TestMaxTime_Sequence(t *testing.T) {
 
 	if got := s.MaxTime(); got != want {
 		t.Errorf("MaxTime() want: %d, got: %d", want, got)
+	}
+}
+
+func TestMaxNode_Sequence(t *testing.T) {
+	want := uint64(1<<64 - 1)
+	s := &Sequence{maxNode: want}
+
+	if got := s.MaxNode(); got != want {
+		t.Errorf("Max() want: %d, got: %d", want, got)
 	}
 }
 

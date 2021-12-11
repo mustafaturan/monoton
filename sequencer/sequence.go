@@ -14,6 +14,7 @@ type Sequence struct {
 	time    uint64
 	max     uint64
 	maxTime uint64
+	maxNode uint64
 	now     func() uint64
 }
 
@@ -25,6 +26,11 @@ func (s *Sequence) Max() uint64 {
 // MaxTime returns the maximum possible time sequence value
 func (s *Sequence) MaxTime() uint64 {
 	return s.maxTime
+}
+
+// MaxNode returns the maximum possible node value
+func (s *Sequence) MaxNode() uint64 {
+	return s.maxNode
 }
 
 // Next returns the next sequence
