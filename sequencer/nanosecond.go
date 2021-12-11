@@ -5,7 +5,7 @@
 package sequencer
 
 import (
-	"github.com/mustafaturan/monoton/v2/mtimer"
+	"github.com/mustafaturan/monoton/v3/mtimer"
 )
 
 // NewNanosecond returns the preconfigured nanosecond sequencer
@@ -15,5 +15,6 @@ func NewNanosecond() *Sequence {
 		now:     timer.Now,
 		max:     62*62 - 1,
 		maxTime: uint64(1<<64 - 1),
+		maxNode: 62*62*62 - 1,
 	}
 }

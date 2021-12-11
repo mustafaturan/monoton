@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/mustafaturan/monoton.svg?branch=master)](https://travis-ci.org/mustafaturan/monoton)
 [![Coverage Status](https://coveralls.io/repos/github/mustafaturan/monoton/badge.svg?branch=master)](https://coveralls.io/github/mustafaturan/monoton?branch=main)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mustafaturan/monoton)](https://goreportcard.com/report/github.com/mustafaturan/monoton)
-[![GoDoc](https://godoc.org/github.com/mustafaturan/monoton?status.svg)](https://godoc.org/github.com/mustafaturan/monoton/v2)
+[![GoDoc](https://godoc.org/github.com/mustafaturan/monoton?status.svg)](https://godoc.org/github.com/mustafaturan/monoton/v3)
 
 Highly scalable, single/multi node, predictable and incremental unique id
 generator with zero allocation magic.
@@ -11,12 +11,12 @@ generator with zero allocation magic.
 ## Installation
 
 Via go packages:
-```go get github.com/mustafaturan/monoton/v2```
+```go get github.com/mustafaturan/monoton/v3```
 
 ## API
 
 The method names and arities/args are stable now. No change should be expected
-on the package for the version `2.x.x` except any bug fixes.
+on the package for the version `3.x.x` except any bug fixes.
 
 ## Usage
 
@@ -30,8 +30,8 @@ package uniqid
 // Import packages
 import (
 	"fmt"
-	"github.com/mustafaturan/monoton/v2"
-	"github.com/mustafaturan/monoton/v2/sequencer"
+	"github.com/mustafaturan/monoton/v3"
+	"github.com/mustafaturan/monoton/v3/sequencer"
 )
 
 var m monoton.Monoton
@@ -93,8 +93,8 @@ package main
 // Import packages
 import (
 	"fmt"
-	"github.com/mustafaturan/monoton/v2"
-	"github.com/mustafaturan/monoton/v2/sequencer"
+	"github.com/mustafaturan/monoton/v3"
+	"github.com/mustafaturan/monoton/v3/sequencer"
 )
 
 func NewIDGenerator() monoton.Monoton {
@@ -187,19 +187,19 @@ implementing the `monoton/sequencer.Sequencer` interface.
 
 Command:
 ```
-go test -benchtime 10000000x -benchmem -run=^$ -bench=. github.com/mustafaturan/monoton/v2
+go test -benchtime 10000000x -benchmem -run=^$ -bench=. github.com/mustafaturan/monoton/v3
 ```
 
 Results:
 ```
 goos: darwin
 goarch: amd64
-pkg: github.com/mustafaturan/monoton/v2
+pkg: github.com/mustafaturan/monoton/v3
 cpu: Intel(R) Core(TM) i5-6267U CPU @ 2.90GHz
-BenchmarkNext-4        	10000000	       108.7 ns/op	       0 B/op	       0 allocs/op
-BenchmarkNextBytes-4   	10000000	        99.88 ns/op	       0 B/op	       0 allocs/op
+BenchmarkNext-4        	10000000	       102.3 ns/op	       0 B/op	       0 allocs/op
+BenchmarkNextBytes-4   	10000000	        97.51 ns/op	       0 B/op	       0 allocs/op
 PASS
-ok  	github.com/mustafaturan/monoton/v2	2.194s
+ok  	github.com/mustafaturan/monoton/v3	2.203s
 ```
 
 ## Contributing

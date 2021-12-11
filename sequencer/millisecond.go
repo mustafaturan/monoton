@@ -7,7 +7,7 @@ package sequencer
 import (
 	"time"
 
-	"github.com/mustafaturan/monoton/v2/mtimer"
+	"github.com/mustafaturan/monoton/v3/mtimer"
 )
 
 // NewMillisecond returns the preconfigured millisecond sequencer
@@ -18,5 +18,6 @@ func NewMillisecond() *Sequence {
 		now:     func() uint64 { return timer.Now() / millisecond },
 		max:     62*62*62*62 - 1,
 		maxTime: 62*62*62*62*62*62*62*62 - 1,
+		maxNode: 62*62*62*62 - 1,
 	}
 }

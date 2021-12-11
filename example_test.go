@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/mustafaturan/monoton/v2"
-	"github.com/mustafaturan/monoton/v2/sequencer"
+	"github.com/mustafaturan/monoton/v3"
+	"github.com/mustafaturan/monoton/v3/sequencer"
 )
 
 func ExampleNew() {

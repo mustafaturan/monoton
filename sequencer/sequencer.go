@@ -57,6 +57,8 @@ type Sequencer interface {
 	Max() uint64
 	// MaxTime returns the maximum possible time sequence value
 	MaxTime() uint64
+	// MaxNode returns the maximum possible node value
+	MaxNode() uint64
 	// Now returns the current monotonic time
 	Next() (uint64, uint64)
 }

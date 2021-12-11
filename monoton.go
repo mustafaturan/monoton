@@ -60,8 +60,8 @@ Example using Singleton
 	// Import packages
 	import (
 		"fmt"
-		"github.com/mustafaturan/monoton/v2"
-		"github.com/mustafaturan/monoton/v2/sequencer"
+		"github.com/mustafaturan/monoton/v3"
+		"github.com/mustafaturan/monoton/v3/sequencer"
 	)
 
 	const year2020asMillisecondPST = 1577865600000
@@ -117,10 +117,9 @@ package monoton
 
 import (
 	"fmt"
-	"math"
 
-	"github.com/mustafaturan/monoton/v2/encoder"
-	"github.com/mustafaturan/monoton/v2/sequencer"
+	"github.com/mustafaturan/monoton/v3/encoder"
+	"github.com/mustafaturan/monoton/v3/sequencer"
 )
 
 const (
@@ -223,11 +222,12 @@ func (m Monoton) NextBytes() [16]byte {
 }
 
 func (m *Monoton) configureByteSizes() error {
+	maxNodeSeqByteSize := encoder.Base62ByteSize(m.sequencer.MaxNode())
 	maxTimeSeqByteSize := encoder.Base62ByteSize(m.sequencer.MaxTime())
 	maxSeqByteSize := encoder.Base62ByteSize(m.sequencer.Max())
 
-	// At least one byte slot is necessary for the node
-	if maxTimeSeqByteSize+maxSeqByteSize >= totalByteSize {
+	// The sum is always 16 bytes
+	if maxTimeSeqByteSize+maxSeqByteSize+maxNodeSeqByteSize != totalByteSize {
 		return &MaxByteSizeError{
 			ByteSizeSequence:     maxSeqByteSize,
 			ByteSizeSequenceTime: maxTimeSeqByteSize,
@@ -251,7 +251,7 @@ func (m *Monoton) configureNode(node uint64) error {
 }
 
 func (m Monoton) validateNode(node uint64) error {
-	maxNode := uint64(math.Pow(62, float64(m.nodeByteSize()))) - 1
+	maxNode := m.sequencer.MaxNode()
 	if node > maxNode {
 		return &MaxNodeCapacityExceededError{Node: node, MaxNode: maxNode}
 	}
