@@ -4,7 +4,6 @@
 
 // Package encoder provides encoding functionality for Base10 to Base62
 // conversion with/without paddings
-//
 package encoder
 
 const (

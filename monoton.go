@@ -6,19 +6,19 @@
 Package monoton is a highly scalable, single/multi node, human-readable,
 predictable and incremental unique id generator
 
-Time Ordered
+# Time Ordered
 
 The monoton package provides sequences based on the monotonic time which
 represents the absolute elapsed wall-clock time since some arbitrary, fixed
 point in the past. It isn't affected by changes in the system time-of-day
 clock.
 
-Initial Time
+# Initial Time
 
 Initial time value opens space for the time value by subtracting the given
 value from the time sequence.
 
-Readable
+# Readable
 
 The monoton package converts all sequences into Base62 format. And Base62
 only uses ASCII alpha-numeric chars to represent data which makes it easy to
@@ -27,18 +27,18 @@ read, predict the order by a human eye.
 The total byte size is fixed to 16 bytes for all sequencers. And at least one
 byte is reserved to nodes.
 
-Multi Node Support
+# Multi Node Support
 
 The monoton package can be used on single/multiple nodes without the need for
 machine coordination. It uses configured node identifier to generate ids by
 attaching the node identifier to the end of the sequences.
 
-Extendable
+# Extendable
 
 The package comes with three pre-configured sequencers and Sequencer
 interface to allow new sequencers.
 
-Included Sequencers and Byte Orderings
+# Included Sequencers and Byte Orderings
 
 The monoton package currently comes with Nanosecond, Millisecond and
 Second sequencers. And it uses Millisecond sequencer by default. For each
@@ -48,7 +48,7 @@ sequencer, the byte orders are as following:
 	Millisecond: 16 B =>  8 B (milliseconds) + 4 B (counter) + 4 B (node)
 	Nanosecond:  16 B => 11 B (nanoseconds)  + 2 B (counter) + 3 B (node)
 
-New Sequencers
+# New Sequencers
 
 The sequencers can be extended for any other time format, sequence format by
 implementing the monoton/sequncer.Sequencer interface.
@@ -111,7 +111,6 @@ Example using Singleton
 			fmt.Println(uniqid.Generate())
 		}
 	}
-
 */
 package monoton
 
@@ -183,9 +182,9 @@ func New(s sequencer.Sequencer, node, initialTime uint64) (Monoton, error) {
 // Next generates next incremental unique identifier as Base62
 // The execution returns the following Bytes (B) for the known sequencer types:
 //
-// 	Second:      16 B =>  6 B (seconds)      + 6 B (counter) + 4 B (node)
-// 	Millisecond: 16 B =>  8 B (milliseconds) + 4 B (counter) + 4 B (node)
-// 	Nanosecond:  16 B => 11 B (nanoseconds)  + 2 B (counter) + 3 B (node)
+//	Second:      16 B =>  6 B (seconds)      + 6 B (counter) + 4 B (node)
+//	Millisecond: 16 B =>  8 B (milliseconds) + 4 B (counter) + 4 B (node)
+//	Nanosecond:  16 B => 11 B (nanoseconds)  + 2 B (counter) + 3 B (node)
 //
 // For byte size decisions please refer to docs/adrs/byte-sizes.md
 func (m Monoton) Next() string {
@@ -197,9 +196,9 @@ func (m Monoton) Next() string {
 // array
 // The execution returns the following Bytes (B) for the known sequencer types:
 //
-// 	Second:      16 B =>  6 B (seconds)      + 6 B (counter) + 4 B (node)
-// 	Millisecond: 16 B =>  8 B (milliseconds) + 4 B (counter) + 4 B (node)
-// 	Nanosecond:  16 B => 11 B (nanoseconds)  + 2 B (counter) + 3 B (node)
+//	Second:      16 B =>  6 B (seconds)      + 6 B (counter) + 4 B (node)
+//	Millisecond: 16 B =>  8 B (milliseconds) + 4 B (counter) + 4 B (node)
+//	Nanosecond:  16 B => 11 B (nanoseconds)  + 2 B (counter) + 3 B (node)
 //
 // For byte size decisions please refer to docs/adrs/byte-sizes.md
 func (m Monoton) NextBytes() [16]byte {
